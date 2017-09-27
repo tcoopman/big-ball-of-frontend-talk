@@ -11,6 +11,10 @@ class: center, middle, inverse, background
 
 background-image: url(/images/elephant.gif)
 
+???
+
+Ask about the people in the room, what is their background, knowledge...
+
 ---
 
 class: center, middle, inverse
@@ -29,34 +33,30 @@ class: center, middle, inverse
 
 # A story about frontend development
 
-Can we use the lessons learned from backend development on the frontend?
-
 [Thomas Coopman @tcoopman](https://www.twitter.com/tcoopman)
 
 [Infinite Tree](https://infinitetree.eu)
 
 ???
 
+On the backend we're moving away from the bbom. So why should we build one on the frontend?
+
+Can we use the lessons learned on the frontend as well?
+
 Using the lessons learned in backend development (services, microservices, decoupled)
+
 What are reasons for services (scaling, not having the bbom, )
 
----
-
-# About me
-
-* Independent Software Consultant and Coach
-* With love for Domain Driven Design
-* Invested a lot in frontend development
-* React, Typescript, Elm, Bucklescript
-* Socrates and Domain Driven Design community
 
 ---
 
 class: center, middle, inverse
 
-# Disclaimer
+# Goal and disclaimer
 
 ???
+
+I want interaction, discuss things with me
 
 I have created and implemented some of these things,
 Not all ideas are tested in production
@@ -65,31 +65,74 @@ Experiment, test on your own, be critical
 
 ---
 
-# First things First
+class: code, large-code
 
-## I will talk about Single Page Applications (SPA)
+# Single Page Applications (SPA)
 
-## But! 
+```html
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>A big ball of fronted</title>
+  <link 
+	  href="https://some-cdn.com/index.201039413284.css" 
+	  rel="stylesheet">
+</head>
+
+<body>
+	<script 
+		src="https://some-other-cdn.com/index.2193481012.js">
+	</script>
+</body>
+
+</html>
+```
 
 ???
 
-Remark about SPA's. You don't have to build a SPA
-Reasons why you would not want to build one:
-
-* What is your reason to build a SPA?
-* Techniques like turbolinks can make it fast
-* Building a SPA has a cost (everything needs server side validation and if you don't build an api...)
+* html, css, js (don't cache the index, infinitly cache all the rest)
+* Fast loading
+* Routing client side
+* Hashes yes?
 
 ---
 
-# So you do want to build a SPA?
+# So, you want to build a SPA!
+
+.center.large[![A perfect SPA](/images/spa.gif)]
+
+---
+
+class: center, middle
+
+# So, you want to build a SPA???
+
+???
 
 Your backend is full of (micro)services. And your frontend is one big ball of mud?
 Was that your goal?
 
----
+I will also asume that your SPA is really one single application, after this talk,
+we will see that this is not really a requirement of the SPA.
 
-# Why it could be a bad idea to build a big ball of frontend
+
+You don't have to build a SPA
+
+Reasons why you would not want to build one:
+
+* Techniques like turbolinks can make it fast (and you don't notice that you are not have a SPA)
+* Building a SPA has a cost (everything needs server side validation and if you don't build an api...)
+* Not everything needs to be dynamic (and if it needs to be dynamic, that doesn't mean SPA per se)
+
+Ask who is building a SPA?
+
+* What is your reason to build a SPA?
+
+Not everyone is doing it
+
+* NoRedInk (Elm)
 
 ---
 
@@ -100,23 +143,25 @@ background-image: url(/images/all-frameworks.png)
 ???
 
 Are you ready to bet on one framework
+Can someone find missing frameworks?
 A lot are missing (elm, bucklescript, reason)
 
 ---
 
+class: center, middle
 
+# Yes, we want a SPA, but not a BBOM!
+.footnote[And we don't want to bet on one framework, and we want to work with multiple teams, and...]
 
----
+???
 
-# Techniques to prevent this
-
-Split your SPA in apps
-Every app has it's own responsibility
-Every app can host an API
-An app doesn't have to be frontend either, it can be mvc,php,whatever, it doesn't matter
+And deployment
 
 ---
-class: center, middle, inverse
+
+class: center, middle, code
+
+# An example app
 
 ```
 +-----------------------------------------------------------------+
@@ -143,7 +188,14 @@ class: center, middle, inverse
 
 ```
 
----
+???
+
+# Techniques to prevent this
+
+Split your SPA in apps
+Every app has it's own responsibility
+Every app can host an API
+An app doesn't have to be frontend either, it can be mvc,php,whatever, it doesn't matter
 
 # 3 (or 4) applications
 
@@ -158,31 +210,160 @@ Insert code here (code examples)
 
 ---
 
-Frontend api's
+class: code, large-code
 
-A: calling directly
-B: message passing
+# The obvious solution
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>A big ball of fronted</title>
+  <link href="header.[hash].css" rel="stylesheet">
+  <link href="menu.[hash].css" rel="stylesheet">
+  <link href="body.[hash].css" rel="stylesheet">
+</head>
+
+<body>
+	<div id="header"></div>
+	<div id="menu"></div>
+	<div id="body"></div>
+	<script src="header.[hash].js"></script>
+	<script src="menu.[hash].js"></script>
+	<script src="body.[hash].js"></script>
+</body>
+</html>
+```
 
 ---
 
-# What about routing?
+class: center, middle
+
+# Implementation
+
+A simple routing application
+
+(This is not production ready)
 
 ???
 
+asset-manifest.json (the most important thing)
+
+---
+
+class: code, large-code
+
+# An other solution
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>A big ball of fronted</title>
+  <link href="index.[hash].css" rel="stylesheet">
+</head>
+
+<body>
+	<div id="header"></div>
+	<div id="menu"></div>
+	<div id="body"></div>
+	<script src="index.[hash].js"></script>
+</body>
+</html>
+```
+
+---
+
+class: center, middle, code
+
+# Frontend api's
+
+.left-code[
+Calling directly
+
+```js
+if (window.menu) {
+	window.menu.addFavorite(
+		'project planning'
+	)
+}
+```
+]
+
+.right-code[
+Message passing
+
+```js
+function listener(action) {
+	//
+}
+window.addListener(listener);
+
+message = {
+	type: "FAVORITE_CREATED",
+	payload: 'project planning'
+}
+window.dispatch(message)
+
+```
+]
+
+???
+
+Message passing similar to redux
+
+Advantages of one vs the other?
+
+---
+
+# Routing
+
+* Clear responsibiltities (only one app can should be able to control the route)
+* Routing application - via api
+
+
+???
+
+History api can be enough
 One responsibility
 If you can do only fronted
 
 ---
 
-# What about shared components?
+# Shared components?
 
-Like a datepicker
-Like a modal
+* form elements
+* datePicker
+* modal
 
 ???
 
 Some options:
+* hosted bootstrap library on a cdn
 * a component library (think npm - problems when you want to use many different
+
+---
+
+# Loaded applications
+
+* Not every application is loaded up front
+* You are not on the backend
+
+???
+
+On the backend you can more or less rely on the fact the a service is available
+What if you
+
+Scenario: in project planning, you want to create a new invoice.
+Possible solutions: 
+* every applications loads a lazy loader that can react on messages
+* all messages go to the backend as well. 
+
+You don't want to load all applications at the same time
+Neither do we want to use webpack to create bundles for all lazy loading (each team must be independent)
+But what should we do then?
 
 ---
 
@@ -190,18 +371,32 @@ Some options:
 
 * Search engines
 * Server side rendering
-* Application loading
+* Different versions/deployment
 
 ???
 
-You need something but it isn't loaded yet
-What can you 
+* Watch out, you're running a distributed system
 
 ---
 
 class: center, middle, inverse
 
 # Questions?
+
+---
+
+# About me
+
+* Independent Software Consultant and Coach
+* Invested a lot in frontend development
+* React, Typescript, Elm, Bucklescript
+* With love for Domain Driven Design
+* Socrates and Domain Driven Design community
+* [Infinite Tree](https://infinitetree.eu)
+
+???
+
+Teamleader, Protime
 
 ---
 
@@ -213,6 +408,7 @@ class: center, middle, inverse
 * [Why you may not need a framework](https://ericheikes.com/may-not-need-framework/)
 * [Giphy](https://giphy.com/)
 * [Slides](https://infinitetree.eu/blog/2017/09/27/a-big-ball-of-frontend-talk)
+* [Elm SPA - NoRedInk](https://dev.to/rtfeldman/tour-of-an-open-source-elm-spa)
 
 ---
 
@@ -223,8 +419,13 @@ background-image: url(/images/thanks.gif)
     </textarea>
     <script src="./remark-latest.min.js">
     </script>
-    <script>
-      var slideshow = remark.create();
-    </script>
+	<script>
+		var slideshow = remark.create({
+			highlightStyle: 'monokai',
+			highlightLanguage: 'remark',
+			highlightLines: true
+		}) ;
+	</script>
+
   </body>
 </html>

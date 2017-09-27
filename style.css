@@ -170,3 +170,28 @@ code {
 .background-small {
     background-size: 60%;
 }
+
+.large-code .remark-code {
+    font-size: 120%;
+}
+
+.code {
+    background-color: #B0BEC5;
+}
+
+.large img {
+    width: 80%;
+    margin-top: 30px;
+}
+
+.left-code {
+    width: 45%;
+    float: left;
+    text-align: left;
+}
+
+.right-code {
+    width: 45%;
+    float: right;
+    text-align: left;
+}
